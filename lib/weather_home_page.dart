@@ -15,6 +15,9 @@ class WeatherHomePage extends StatefulWidget {
 }
 
 class _WeatherHomePageState extends State<WeatherHomePage> {
+  late Future<Map<String, dynamic>> weather;
+  late Future<Map<String, dynamic>> forecast;
+  late int a;
   // getting response from the web
   Future<Map<String, dynamic>> getCurrentWeather() async {
     try {
@@ -41,11 +44,18 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
       if (data1["cod"] != "200") {
         throw "An unexpected error occured";
       }
-  
+
       return data1;
     } catch (e) {
       throw e.toString();
     }
+  }
+
+  @override
+  void initState() {
+    forecast = getHourlyForecast();
+    weather = getCurrentWeather();
+    super.initState();
   }
 
   @override
@@ -63,7 +73,11 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                weather = getCurrentWeather();
+              });
+            },
             icon: const Icon(
               Icons.refresh,
             ),
@@ -71,7 +85,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
         ],
       ),
       body: FutureBuilder(
-        future: getCurrentWeather(),
+        future: weather,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator.adaptive());
@@ -115,7 +129,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                   child: Card(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16)),
-                    elevation: 10,
+                    elevation: 12,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: BackdropFilter(
@@ -162,33 +176,35 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                 const Text(
                   "Hourly Weather Forecast",
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-              
 
-                FutureBuilder(
-                    future: getHourlyForecast(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                            child: CircularProgressIndicator.adaptive());
-                      }
+                SizedBox(
+                  height: 115,
+                  child: FutureBuilder(
+                      future: forecast,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                           return const Center(child: LinearProgressIndicator());
+                          
+                        }
 
-                      if (snapshot.hasError) {
-                        return Center(
-                          child: Text(snapshot.error.toString()),
-                        );
-                      }
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text(snapshot.error.toString()),
+                          );
+                        }
 
-                      final data1 = snapshot.data;
+                        final data1 = snapshot.data;
 
-                      return SizedBox(
-                        height: 131,
-                        child: ListView.builder(
+                        return ListView.builder(
+                            physics: const BouncingScrollPhysics(),
                             itemCount: 9,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, index) {
@@ -213,9 +229,9 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                   timeText: DateFormat.j().format(time),
                                   value: "${(value - 273.15).round()} °C",
                                   icon: hourlyWeatherIcon);
-                            }),
-                      );
-                    }),
+                            });
+                      }),
+                ),
 
                 const SizedBox(
                   height: 30,
@@ -225,7 +241,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                 const Text(
                   "Additional Information",
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(

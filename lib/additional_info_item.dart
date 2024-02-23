@@ -17,21 +17,21 @@ class AdditionalInfoItem extends StatelessWidget {
       children: [
         Icon(
          icon,
-          size: 40,
+          size: 30,
         ),
         const SizedBox(
           height: 13,
         ),
         Text(
           label,
-          style: const TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 14),
         ),
         const SizedBox(
           height: 13,
         ),
         Text(
           "$value",
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
       ],
     );

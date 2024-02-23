@@ -12,17 +12,18 @@ const HourlyForecastItem(
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 7,
-      child: Container(
-        width: 100,
-        padding: const EdgeInsets.all(12),
+      elevation: 2,
+      child: SizedBox(
+       
+        width: 101,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               timeText,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 18,
+                fontSize: 16,
                 
               ),
               maxLines: 1,
@@ -33,7 +34,7 @@ const HourlyForecastItem(
             ),
             Icon(
               icon,
-              size: 30,
+              size: 25,
             ),
             const SizedBox(
               height: 10,
@@ -41,7 +42,7 @@ const HourlyForecastItem(
             Text(
               value,
               style: const TextStyle(
-                fontSize: 16
+                fontSize: 14
               ),
             ),
           ],
